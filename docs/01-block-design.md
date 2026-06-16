@@ -80,7 +80,7 @@ Default demo coefficients: `100, 200, 300, 200, 100`.
 ### Source BRAM (stimulus)
 
 - True dual-port RAM in the exported XSA (PS can write port A; DMA reads port B).
-- **Not** pre-initialized in the shipped bitstream — students load `stimulus/src_stimulus.coe` at runtime via **XSCT** (see [03-execution.md](03-execution.md)).
+- **Not** pre-initialized in the shipped bitstream — students load `stimulus/src_stimulus.coe` at runtime via **XSCT** (see [02-software.md — Launch](02-software.md#launch-on-board-main--xsct)).
 - 32-bit words; FIR uses the **lower 16 bits** as signed samples.
 
 ### Destination BRAM (results)

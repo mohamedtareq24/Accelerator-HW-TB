@@ -139,3 +139,106 @@ FIR DMA demo done
 ```
 
 ---
+
+## Launch on board (main + XSCT)
+
+This section replaces the old execution doc. You run **`main.c`** from Vitis and load stimulus with **XSCT** while the app waits on UART.
+
+### Prerequisites
+
+- [ ] Platform built from `hardware/platform/fir_demo_wrapper.xsa`
+- [ ] Application built from `software/src/main.c` + `hw_config.h`
+- [ ] Ultra96-V2 connected (JTAG + UART)
+- [ ] `stimulus/src_stimulus.coe` and `stimulus/load_stimulus.tcl` available on the lab PC
+
+### Board setup (Ultra96-V2)
+
+| Setting | Value |
+|---------|--------|
+| **SW3** (boot mode) | SW3.1 **ON**, SW3.2 **OFF** → JTAG debug |
+| **microSD** | Remove card (avoids Linux boot during debug) |
+| **Power** | Power-cycle after changing switches |
+
+### Step 1 — Program the FPGA
+
+In Vitis:
+
+1. **Xilinx → Program Device** (or use your debug configuration).
+2. Select the bitstream from the platform build.
+3. Click **Program**.
+
+### Step 2 — Launch `main.c` (System Debugger)
+
+1. **Run → Debug Configurations** → **Single Application Debug** (or System Debugger).
+2. Select your application ELF (e.g. `fir_demo.elf`).
+3. Open the **UART serial terminal** (115200 8N1, Avnet USB-UART port).
+4. Click **Debug** / **Run**.
+
+The app prints the banner, then stops at:
+
+```
+=== Stimulus upload required (XSCT) ===
+...
+Press ENTER in this UART window when upload is complete...
+```
+
+**Leave it waiting** — do not press Enter yet.
+
+### Step 3 — Load stimulus with XSCT
+
+In **xsct**:
+
+```tcl
+source <repo>/stimulus/load_stimulus.tcl
+```
+
+That is all — the script picks up `src_stimulus.coe` from the same folder and writes to `0xA0002000`.
+
+### Step 4 — Continue from UART
+
+1. Return to the **UART terminal** (Step 2).
+2. Press **Enter**.
+3. The demo configures the FIR, runs DMA, prints timing and the first 10 results.
+
+If you see `Warning: first stimulus word is 0`, repeat Step 3 before pressing Enter.
+
+### Launch flow (summary)
+
+```mermaid
+sequenceDiagram
+  participant Vitis
+  participant UART
+  participant XSCT
+  participant Board
+
+  Vitis->>Board: Program bitstream
+  Vitis->>Board: Debug main.elf
+  Board->>UART: Stimulus upload prompt
+  XSCT->>Board: load_stimulus.tcl → 0xA0002000
+  UART->>Board: User presses ENTER
+  Board->>UART: Coefficients, timing, results
+```
+
+### Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---------|--------------|-----|
+| Hang at `psu_init` | Wrong boot mode / Linux running | SW3 JTAG mode, remove SD, power-cycle |
+| `DMA lookup config failed` | Stale BSP | Re-import XSA, rebuild platform |
+| `src BRAM[0] = 0x00000000` | Stimulus not loaded | Re-run `load_stimulus.tcl` |
+| Wrong / zero results | Bad transfer length | `TRANSFER_LEN_BYTES` = 1024 for 256-word COE |
+| `coef read` mismatch | Wrong FIR base | Check `xparameters.h` vs `hw_config.h` |
+
+### Quick reference
+
+| Item | Value |
+|------|--------|
+| Application | `software/src/main.c` |
+| XSCT script | `stimulus/load_stimulus.tcl` |
+| Stimulus COE | `stimulus/src_stimulus.coe` |
+| Src BRAM | `0xA0002000` |
+| Dest BRAM | `0xA0000000` |
+
+---
+
+**Back to:** [README](../README.md)

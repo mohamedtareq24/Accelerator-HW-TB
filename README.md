@@ -7,12 +7,11 @@ Bare-metal tutorial: custom 5-tap FIR in PL, AXI DMA streaming, BRAM stimulus/re
 ## Kit layout
 
 ```
-ultimate/
+Accelerator-HW-TB/
 ├── README.md
 ├── docs/
 │   ├── 01-block-design.md
-│   ├── 02-software.md
-│   └── 03-execution.md
+│   └── 02-software.md
 ├── hardware/
 │   ├── platform/fir_demo_wrapper.xsa
 │   ├── rtl/
@@ -32,8 +31,7 @@ ultimate/
 | Step | Document |
 |------|----------|
 | 1. Block design | [docs/01-block-design.md](docs/01-block-design.md) |
-| 2. Software | [docs/02-software.md](docs/02-software.md) |
-| 3. Run on board | [docs/03-execution.md](docs/03-execution.md) |
+| 2. Software + launch on board | [docs/02-software.md](docs/02-software.md) |
 
 ## Requirements
 
