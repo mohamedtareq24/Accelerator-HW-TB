@@ -194,6 +194,14 @@ source <repo>/stimulus/load_stimulus.tcl
 
 That is all — the script picks up `src_stimulus.coe` from the same folder and writes to `0xA0002000`.
 
+> **Tip — `mwr` / `mrd` in XSCT**  
+> The load script uses these under the hood. Handy for spot checks:
+> ```tcl
+> mrd 0xA0002000 4          ;# read 4 words from src BRAM
+> mwr 0xA0002000 0x00000001 ;# write one 32-bit word (hex)
+> mrd 0xA0000000 4          ;# peek at dest BRAM after the demo
+> ```
+
 ### Step 4 — Continue from UART
 
 1. Return to the **UART terminal** (Step 2).
