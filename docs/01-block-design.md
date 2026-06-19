@@ -52,7 +52,7 @@ Two paths exist in parallel:
 - **MM2S** (memory → stream): reads `axi_bram_src`, pushes samples into FIR `S_AXIS`
 - **S2MM** (stream → memory): captures FIR `M_AXIS`, writes `axi_bram_dst`
 - **32-bit** data width on both memory and stream interfaces
-- **Simple mode** — length programmed by software (`XAxiDma_SimpleTransfer`)
+- **Simple mode only** — scatter-gather is **disabled** in the block design; software programs one contiguous transfer per channel (`XAxiDma_SimpleTransfer`), with no descriptor rings
 
 ### Custom FIR (`fir_top`)
 
